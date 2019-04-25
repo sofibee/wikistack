@@ -6,7 +6,8 @@ const db = new Sequelize('postgres://localhost:5432/wikistack', {
 const Page = db.define('page', {
   title: {
     type: Sequelize.STRING,
-    allowNull: false},
+    allowNull: false
+  },
   slug: {
     type: Sequelize.STRING,
     allowNull: false
@@ -20,6 +21,15 @@ const Page = db.define('page', {
     defaultValue: 'closed'
   }
 });
+
+function slugify(title) {
+  let regex = /\s/g;
+  return title.replace(regex, '_');
+}
+
+Page.beforeValidate((userInstance, optionsObject) => {
+  userInstance.slug = slugify(userInstance.title)
+})
 
 const User = db.define('user', {
   name: {
